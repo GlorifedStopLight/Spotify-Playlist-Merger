@@ -1,1 +1,2 @@
-import SpotifyWrapper
+import SpotifyWrapper as sw
+
