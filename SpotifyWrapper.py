@@ -1,0 +1,2 @@
+def getPlaylistFrom(user):
+    pass
