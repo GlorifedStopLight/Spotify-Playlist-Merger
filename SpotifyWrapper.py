@@ -33,22 +33,3 @@ class SpotifyConnection():
         }
         response = requests.get(endpoint, params=parameters, headers=headers).json()
 
-        playlist = {}
-
-        for track in response['items']:
-            playlist[len(playlist)] = track['track']['href']
-
-        print(playlist)
-
-
-
-    # Gets the playlist ID from the link
-    def __getPlaylistID(self, link):
-        parsed = link.split('/')  # Parse on /
-        payload = parsed[-1]  # Parse out parameters
-        playlist_id = payload.split('?')[0]  # Get the ID
-
-        return playlist_id  # Return it
-
-sc = SpotifyConnection('83bc298d7d524091b2e3d1b410d4e62c', 'baeb26ab559f408b9c1e96ad77a34966')
-sc.getPlaylist('https://open.spotify.com/playlist/3WYyBELipwA9Yor7Mi2Yxn?si=ad49b85fb819438c', 50)
