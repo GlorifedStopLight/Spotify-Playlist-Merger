@@ -33,14 +33,33 @@ class SpotifyConnection():
         }
         response = requests.get(endpoint, params=parameters, headers=headers).json()
 
-        playlist = set()
+        playlist = []
 
         for track in response['items']:
-            playlist.add(track['track']['href'])
+            playlist.append(track)
 
-        print(playlist)
+        playlist.sort()
 
+        playlist_map = {}
+        for song in playlist:
+            playlist_map[len(playlist_map)] = song
 
+        return playlist_map
+
+    # returns true if string1 comes before string2 when sorted
+    def stringLessThanString(self, string1, string2) -> bool:
+
+        # string1 < string2
+        if [string1, string2] == [string1, string2].sort():
+
+            # string1 less than string2 is True
+            return True
+
+        # string1 > string2
+        else:
+
+            # string1 less than string2 is False
+            return False
 
     # Gets the playlist ID from the link
     def __getPlaylistID(self, link):
