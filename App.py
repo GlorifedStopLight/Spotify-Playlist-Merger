@@ -1,7 +1,7 @@
 from SpotifyWrapper import *
 
 
-# returns true if inputs are sorted
+# returns true if string1 comes before string2 when sorted
 def stringLessThanString(string1, string2) -> bool:
 
     # string1 < string2
@@ -17,6 +17,7 @@ def stringLessThanString(string1, string2) -> bool:
         return False
 
 
+# returns a list of common song ids
 def getCommonSongs(playList1: dict, playList2: dict) -> list:
 
     # indexes of playlists
@@ -54,9 +55,7 @@ def getCommonSongs(playList1: dict, playList2: dict) -> list:
     return common
 
 
-testing = {0: "cat"}
 
-print(testing[0])
 
 
 
