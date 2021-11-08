@@ -1,6 +1,9 @@
+import json
+
 import requests
 
-class SpotifyConnection():
+
+class SpotifyConnection:
     def __init__(self, client_id, client_secret):
         # We need our program to request access to spotify
         AUTH_URL = 'https://accounts.spotify.com/api/token'  # Url that provides access
@@ -15,36 +18,37 @@ class SpotifyConnection():
         # Finally, now that we've requested it and formatted data, save the access token
         self.access_token = auth_response_data['access_token']
 
-    def getPlaylist(self, link, items):
+    def getPlaylist(self, link):
         # Get the ID for the playlist
         playlist_id = self.__getPlaylistID(link)
 
-        endpoint = 'https://api.spotify.com/v1/playlists/'+playlist_id+'/tracks'
+        endpoint = 'https://api.spotify.com/v1/playlists/' + playlist_id + '/tracks'
         headers = {
             'Authorization': 'Bearer {token}'.format(token=self.access_token),
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
-        parameters = {
-            "market": "ES",
-            "fields": "items(track(href))",
-            "limit": 50,
-            "offset": 0
-        }
-        response = requests.get(endpoint, params=parameters, headers=headers).json()
 
-        playlist = []
+        playlist = set()
+        fetched_total = 0
+        fetched_cycle = 50
 
-        for track in response['items']:
-            playlist.append(track)
+        while fetched_cycle == 50:
+            parameters = {
+                "market": "ES",
+                "fields": "items(track(href))",
+                "limit": 50,
+                "offset": fetched_total
+            }
 
-        playlist.sort()
+            response = requests.get(endpoint, params=parameters, headers=headers).json()
 
-        playlist_map = {}
-        for song in playlist:
-            playlist_map[len(playlist_map)] = song
+            fetched_cycle = len(response['items'])
+            fetched_total += fetched_cycle
+            for track in response['items']:
+                playlist.add(track['track']['href'])
 
-        return playlist_map
+        return playlist
 
     # returns true if string1 comes before string2 when sorted
     def stringLessThanString(self, string1, string2) -> bool:
