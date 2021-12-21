@@ -67,3 +67,39 @@ class SpotifyConnection:
 
         return playlist_id  # Return it
 
+    # gets the playlist ids of a given user
+    def getUsersPlaylists(self, userId):
+        parameters = {
+            "fields": "items(href)",
+            "limit": 20,
+            "offset": 0
+        }
+
+        headers = {
+            'Authorization': 'Bearer {token}'.format(token=self.access_token),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+
+        # set endpoint using user id
+        endpoint = 'https://api.spotify.com/v1/users/' + userId + '/playlists'
+
+        response = requests.get(endpoint, params=parameters, headers=headers).json()
+
+        # a set of all the user's songs
+        allUserPlaylists = set()
+
+        for i in response['items']:
+            allUserPlaylists.add(i['href'])
+
+        while len(response['items']) == parameters['limit']:
+
+            parameters['offset'] += parameters['limit']
+
+            response = requests.get(endpoint, params=parameters, headers=headers).json()
+
+            # add batch of playlists to all playlists
+            for i in response['items']:
+                allUserPlaylists.add(i['href'])
+
+        return allUserPlaylists
