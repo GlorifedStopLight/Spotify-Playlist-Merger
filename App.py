@@ -1,62 +1,56 @@
 from SpotifyWrapper import *
 
 
-# returns true if string1 comes before string2 when sorted
-def stringLessThanString(string1, string2) -> bool:
+# class used to create common playlists
+class commonPlaylistCreator:
 
-    # string1 < string2
-    if [string1, string2] == [string1, string2].sort():
+    def __init__(self):
+        self.commonSongs = None
+        self.playlists = []
+        self.user = None
+        self.userPassword = None
+        self.sc = SpotifyConnection("83bc298d7d524091b2e3d1b410d4e62c", "baeb26ab559f408b9c1e96ad77a34966")
 
-        # string1 less than string2 is True
-        return True
+    # takes an array of playlists ids saves them to the instance of this object
+    def selectPlaylistsToAdd(self, playlistNames):
 
-    # string1 > string2
-    else:
+        # each given playlist
+        for playlistID in playlistNames:
 
-        # string1 less than string2 is False
-        return False
+            # save the songs in each playlist
+            self.playlists.append(self.sc.getPlaylistSongIds(playlistID))
 
+    # creates an empty playlist
+    def makeNewEmptyPlaylist(self):
+        pass
 
-# returns a list of common song ids
-def getCommonSongs(playList1: dict, playList2: dict) -> list:
+    # save the common songs that are in all given playlists (call AFTER selectPlaylistsToAdd)
+    def getCommon(self):
+        print(len(self.playlists[0]))
+        print(len(self.playlists[1]))
 
-    # indexes of playlists
-    index1, index2 = 0, 0
+        # at least 2 playlists given
+        if len(self.playlists) >= 2:
 
-    # common songs
-    common = []
+            # get the songs that are shared by all given playlists
+            self.commonSongs = self.playlists[0].intersection(*self.playlists[1:])
 
-    # loop through both until you reach the end of a playlist
-    while index1 < len(playList1) and index2 < len(playList2):
-
-        # found common song
-        if playList1[index1] == playList2[index2]:
-
-            # save song
-            common.append(playList1[index1])
-
-            # next elements
-            index1 += 1
-            index2 += 1
-
-        # value of index1 is before value of index2
-        elif stringLessThanString(playList1[index1], playList2[index2]):
-
-            # next element
-            index1 += 1
-
-        # value of index1 is after value of index2
-        else:
-
-            # next element
-            index2 += 1
-
-    # return common songs from playlist1 and playlist2
-    return common
+        return self.commonSongs
 
 
+fun = commonPlaylistCreator()
+fun.selectPlaylistsToAdd(["https://open.spotify.com/playlist/3WYyBELipwA9Yor7Mi2Yxn?si=16d3a1dbc872491a",
+                          "https://open.spotify.com/playlist/7I8h4qLgJlMY9ULeV4tm9s?si=7f3017de8fda4df9"])
 
+commonSongLinks = fun.getCommon()
 
+fixedLinks = set("https://open.spotify.com/track/" + i.split("/")[-1] for i in commonSongLinks)
 
+print(fixedLinks)
+print(len(fixedLinks), "common songs")
 
+# https://open.spotify.com/track/3Pj6u2KTgepyyidp5xfbHp?si=3cda388d55114143
+# https://api.spotify.com/v1/tracks/3Pj6u2KTgepyyidp5xfbHp
 
+# 3Pj6u2KTgepyyidp5xfbHp?si=3cda388d55114143
+# 3Pj6u2KTgepyyidp5xfbHp
